@@ -117,7 +117,7 @@ public class MM2Lives implements NativeKeyListener
              double lpm = (double)Math.round(livesperminute * 100d) / 100d;
              String line = "";
              
-               //Feel free to comment/uncomment2 out any lines you don't want to see, you can even replace the run timer with your own stopwatch
+               //Feel free to comment/uncomment out any lines you don't want to see, you can even replace the run timer with your own stopwatch
                 //line += "Recent clear rates: "; line += "\n";
                 //line += Integer.toString(hourcount); line += " clears / past hr "; line += "\n"; 
                 //line += Integer.toString(tenmincount); line += " clears / past 10 min "; line += "\n"; 
