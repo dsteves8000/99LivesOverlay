@@ -46,7 +46,7 @@ public class MM2Lives implements NativeKeyListener
       String kP = NativeKeyEvent.getKeyText(e.getKeyCode()); 
       long cd = System.currentTimeMillis() - cooldown; //Cooldown of 20 seconds prevents accidental secondary presses
       int seclast = ((int) cd ) / 1000; 
-      if(cd >= 20000) 
+      if(cd >= 20000) // <- adjust this number of milliseconds to adjust cooldown timer
       { 
          if(kP.equals("1") || kP.equals("2") || kP.equals("3") || kP.equals("0") || kP.equals("9")) 
          { 
