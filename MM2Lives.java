@@ -9,7 +9,7 @@ public class MM2Lives implements NativeKeyListener
 { 
    public static void main(String [] args) 
    { 
-      //Reads user input (currently set to work when the comma button is pressed, you might need help on setting this up if you don't know about classpaths 
+      //Reads user input (currently set to work when the 1,2,3,0,9 buttons are pressed, you might need help on setting this up if you don't know about classpaths / using downloaded .jar files for imports 
       try 
       { 
          GlobalScreen.registerNativeHook(); 
