@@ -44,7 +44,7 @@ public class MM2Lives implements NativeKeyListener
       }  
       long hours = time/3600; 
       String kP = NativeKeyEvent.getKeyText(e.getKeyCode()); 
-      long cd = System.currentTimeMillis() - cooldown; //Cooldown prevents accidental secondary presses
+      long cd = System.currentTimeMillis() - cooldown; //Cooldown of 20 seconds prevents accidental secondary presses
       int seclast = ((int) cd ) / 1000; 
       if(cd >= 20000) 
       { 
@@ -127,7 +127,7 @@ public class MM2Lives implements NativeKeyListener
                 line += "Time elapsed: "; line += " ";  line += ":";  line += " ";  line += ":"; line += " "; line += " (+"; line += Integer.toString(seclast); line += ")"; line += "\n"; 
                 line += "Current Pace: "; line += Long.toString(pacehours); line += ":"; line += pacesdm; line += Long.toString(paceminutes); line += ":"; line += pacesds; line += Long.toString(pacesecs); line += "\n";
                 line += "Lives per minute: "; line += lpm; line += "\n"; 
-                line += "WR: 45:56 | PB: 50:54 "; line += "\n";
+                line += "WR: 45:56 | PB: 49:38 "; line += "\n";
                 System.out.println(line); 
                 
                 
