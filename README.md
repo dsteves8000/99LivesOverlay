@@ -2,12 +2,10 @@
 
 This is used as a customizable overlay to display current pace for obtaining lives.
 
-Windows
-=======
+Windows:
 Simply run the MM2Lives.cmd file and the program should run.
 
-Linux
-=======
+Linux:
 Locate the directory where you saved the files, and type java -jar MM2Lives.jar whenever you wish to run the program.
 
 
