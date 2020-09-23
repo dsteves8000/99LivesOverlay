@@ -1,6 +1,6 @@
 # 99LivesOverlay
 
-Make sure you have Java installed and current, it is confirmed to work with Java 11 at least.
+Make sure you have Java and the Java Runtime Environment installed and current, it is confirmed to work with Java 11 at least.
 
 This is used as a customizable overlay to display current pace for obtaining lives. To compile and run this, make sure JNativeHook1.1 is attached to the classpath. In the terminal to compile this (you only need to do this part once) you just need to go to the directory that you downloaded the program and type:
 
