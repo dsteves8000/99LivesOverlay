@@ -4,7 +4,7 @@ Make sure you have Java and the Java Runtime Environment installed and current, 
 
 This is used as a customizable overlay to display current pace for obtaining lives. To compile and run this, make sure JNativeHook1.1 is attached to the classpath. In the terminal to compile this (you only need to do this part once) you just need to go to the directory that you downloaded the program and type:
 
-javac -cp JNativeHook1.1.jar MM2New.java
+javac -cp JNativeHook1.1.jar MM2Lives.java
 
 and everytime you want to start/restart a run for the program it is:
 
