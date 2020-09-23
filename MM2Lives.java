@@ -43,14 +43,19 @@ public class MM2Lives implements NativeKeyListener
          sdm = "0"; 
       }  
       long hours = time/3600; 
-      String kP = NativeKeyEvent.getKeyText(e.getKeyCode()); 
-      long cd = System.currentTimeMillis() - cooldown; //Cooldown of 20 seconds prevents accidental secondary presses
+      String kP = NativeKeyEvent.getKeyText(e.getKeyCode());
+      if(kP.equals("Back Slash"))
+      {
+         //System.out.println("!");
+         System.exit(1);
+      }   
+      long cd = System.currentTimeMillis() - cooldown; //Cooldown of 10 seconds prevents accidental secondary presses
       int seclast = ((int) cd ) / 1000; 
-      if(cd >= 20000) // <- adjust this number of milliseconds to adjust cooldown timer
+      if(cd >= 10000) // <- adjust this number of milliseconds to adjust cooldown timer
       { 
          if(kP.equals("1") || kP.equals("2") || kP.equals("3") || kP.equals("0") || kP.equals("9")) 
          { 
-            if(kP.equals("1") || kP.equals("2") || kP.equals("3") || kP.equals("0"))
+            if(kP.equals("1") || kP.equals("2") || kP.equals("3") || kP.equals("0") || kP.equals("9"))
             {
                cooldown = System.currentTimeMillis(); 
                int sec = (int) (System.currentTimeMillis()/1000); 
@@ -124,7 +129,10 @@ public class MM2Lives implements NativeKeyListener
                 //line += "Clears since run start: "; line += totalclears; line += "\n";
                 //line += "Current Lives: "; line += (livesgained + 5); line += "\n";
                 
-                line += "Time elapsed: "; line += " ";  line += ":";  line += " ";  line += ":"; line += " "; line += " (+"; line += Integer.toString(seclast); line += ")"; line += "\n"; 
+               
+                
+                
+                line += "Time elapsed: "; line += "  "; line += ":"; line += "  "; line += ":"; line += "  "; line += " (+"; line += Integer.toString(seclast); line += ")"; line += "\n"; 
                 line += "Current Pace: "; line += Long.toString(pacehours); line += ":"; line += pacesdm; line += Long.toString(paceminutes); line += ":"; line += pacesds; line += Long.toString(pacesecs); line += "\n";
                 line += "Lives per minute: "; line += lpm; line += "\n"; 
                 line += "WR: 45:56 | PB: 49:38 "; line += "\n";
