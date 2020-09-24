@@ -7,8 +7,11 @@ import org.jnativehook.keyboard.NativeKeyListener;
 import java.lang.Math; 
 public class MM2Lives implements NativeKeyListener 
 { 
-   public static void main(String [] args) 
+   public static void main(String [] args) throws FileNotFoundException, IOException 
    { 
+	  //Reads the file with the WR and PB
+	  handlePBWR();
+	  loadPBWR();
       //Reads user input (currently set to work when the 1,2,3,0,9 buttons are pressed, you might need help on setting this up if you don't know about classpaths / using downloaded .jar files for imports 
       try 
       { 
@@ -17,8 +20,7 @@ public class MM2Lives implements NativeKeyListener
       catch(Exception e) { e.printStackTrace(); } 
       GlobalScreen.getInstance().addNativeKeyListener(new MM2Lives()); 
    } 
-   static File oldoutput; 
-   static File output; 
+   static File oldoutput, output, PBWR; 
    static long seconds; 
    static int totalclears = 0;
    static int livesgained = 0;
@@ -27,6 +29,27 @@ public class MM2Lives implements NativeKeyListener
    static ArrayList<Integer> times = new ArrayList<Integer>(); 
    static int hourcount = 0; 
    static int tenmincount = 0; 
+   static String thePBWR = "";
+   public static boolean handlePBWR() throws IOException
+   {
+	   PBWR = new File ("PBWR.txt");
+	   PBWR.createNewFile();
+	   return true;
+   }
+   public static void loadPBWR() throws FileNotFoundException
+   {
+	   Scanner in = new Scanner(PBWR);
+	   int c = 0;
+	   while(in.hasNextLine())
+	   {
+			 thePBWR += in.nextLine();
+			 if(c == 0)
+			 {
+				 thePBWR += " | ";
+				 c++;
+			 }
+	   }
+   }
    public void nativeKeyPressed(NativeKeyEvent e) 
    { 
       long time = (System.currentTimeMillis() - starttime)/1000;
@@ -133,9 +156,10 @@ public class MM2Lives implements NativeKeyListener
                 
                 
                 line += "Time elapsed: "; line += "  "; line += ":"; line += "  "; line += ":"; line += "  "; line += " (+"; line += Integer.toString(seclast); line += ")"; line += "\n"; 
-                line += "Current Pace: "; line += Long.toString(pacehours); line += ":"; line += pacesdm; line += Long.toString(paceminutes); line += ":"; line += pacesds; line += Long.toString(pacesecs); line += "\n";
-                line += "Lives per minute: "; line += lpm; line += "\n"; 
-                line += "WR: 45:56 | PB: 49:38 "; line += "\n";
+                line += "Current23 Pace: "; line += Long.toString(pacehours); line += ":"; line += pacesdm; line += Long.toString(paceminutes); line += ":"; line += pacesds; line += Long.toString(pacesecs); line += "\n";
+                line += "Lives: "; line += (livesgained + 5); line += " (Per min: "; line += lpm; line += ")\n"; 
+                line += thePBWR;  line += "\n";
+                //line += "WR: 45:56 | PB: 49:38 "; line += "\n";
                 System.out.println(line); 
                 
                 
