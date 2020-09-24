@@ -7,7 +7,9 @@ Simply run the MM2Lives.cmd file and the program should run.
 
 Linux:
 Locate the directory where you saved the files, and type the command: 
+
 java -jar MM2Lives.jar 
+
 whenever you wish to run the program.
 
 
