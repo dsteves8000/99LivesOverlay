@@ -17,7 +17,7 @@ Type " \ " to close the program when you want to end or restart a run (or I gues
 
 You may notice that the first line in the current overlay says "Time elapsed:---:--:-- (+LastTimeInSecondsYouPressedAnyUpdateButton)". I left the :'s in there so that the user could line up their current external stopwatch on their overlay with this overlay.
 
-For usage you are supposed to run the program right at the moment you are pressing the A button on the map to start your first level. The run ends the second you touch the flagpole of the final level that pushes you to 99 lives (if you go beyond 99 lives in the program like if you get a +3 when you have 98 lives for example, the program simply puts you at 99 lives). If you wish to reset the run just close and reopen the program.
+For usage you are supposed to run the program right at the moment you are pressing the A button on the map to start your first level. You should also start whatever stopwatch you are currently using at the same time you run the program. The run ends the second you touch the flagpole of the final level that pushes you to 99 lives (if you go beyond 99 lives in the program like if you get a +3 when you have 98 lives for example, the program simply puts you at 99 lives). If you wish to reset the run just close and reopen the program.
 
 Anytime you wish to update the WR or PB just go into PBWR.txt and edit the text file when a new PB is obtained. Currently it is set to Raysfire's PB, and Slade's WR as of 9/23/20 so you may want to update this accordingly (especially if you are someone other than Raysfire/Slade).
 
