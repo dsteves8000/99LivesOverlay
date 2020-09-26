@@ -156,7 +156,7 @@ public class MM2Lives implements NativeKeyListener
                 
                 
                 line += "Time elapsed: "; line += "  "; line += ":"; line += "  "; line += ":"; line += "  "; line += " (+"; line += Integer.toString(seclast); line += ")"; line += "\n"; 
-                line += "Current23 Pace: "; line += Long.toString(pacehours); line += ":"; line += pacesdm; line += Long.toString(paceminutes); line += ":"; line += pacesds; line += Long.toString(pacesecs); line += "\n";
+                line += "Current Pace: "; line += Long.toString(pacehours); line += ":"; line += pacesdm; line += Long.toString(paceminutes); line += ":"; line += pacesds; line += Long.toString(pacesecs); line += "\n";
                 line += "Lives: "; line += (livesgained + 5); line += " (Per min: "; line += lpm; line += ")\n"; 
                 line += thePBWR;  line += "\n";
                 //line += "WR: 45:56 | PB: 49:38 "; line += "\n";
