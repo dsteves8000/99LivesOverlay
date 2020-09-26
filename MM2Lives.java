@@ -10,7 +10,9 @@ public class MM2Lives implements NativeKeyListener
    public static void main(String [] args) throws FileNotFoundException, IOException 
    { 
 	  //Reads the file with the WR and PB
+	  handleConfig();
 	  handlePBWR();
+	  loadConfig();
 	  loadPBWR();
       //Reads user input (currently set to work when the 1,2,3,0,9 buttons are pressed, you might need help on setting this up if you don't know about classpaths / using downloaded .jar files for imports 
       try 
@@ -20,7 +22,8 @@ public class MM2Lives implements NativeKeyListener
       catch(Exception e) { e.printStackTrace(); } 
       GlobalScreen.getInstance().addNativeKeyListener(new MM2Lives()); 
    } 
-   static File oldoutput, output, PBWR; 
+   static File oldoutput, output, PBWR, Config; 
+   static boolean header, pasthr, pastten, timerunstart, lastinput, clearsrunstart, curpace, curlives, avglives, linewithPBWR, dispPB, dispWR;
    static long seconds; 
    static int totalclears = 0;
    static int livesgained = 0;
@@ -30,26 +33,86 @@ public class MM2Lives implements NativeKeyListener
    static int hourcount = 0; 
    static int tenmincount = 0; 
    static String thePBWR = "";
+   static long cdval = 10;
    public static boolean handlePBWR() throws IOException
    {
 	   PBWR = new File ("PBWR.txt");
 	   PBWR.createNewFile();
 	   return true;
    }
+   public static boolean handleConfig() throws IOException
+   {
+	   Config = new File ("Config.txt");
+	   Config.createNewFile();
+	   return true;
+   }
    public static void loadPBWR() throws FileNotFoundException
    {
-	   Scanner in = new Scanner(PBWR);
+	  Scanner in = new Scanner(PBWR);
+      Scanner check = new Scanner(PBWR);
+      String [] tPBWR = new String [2];
+      tPBWR[0] = "";
+      tPBWR[1] = "";
+      
 	   int c = 0;
+      boolean twolinecheck = false;
+      if(check.hasNextLine())
+      {
+        check.nextLine();
+        if(check.hasNextLine())
+        {
+            twolinecheck = true;
+        }
+      }           
 	   while(in.hasNextLine())
 	   {
-			 thePBWR += in.nextLine();
-			 if(c == 0)
-			 {
-				 thePBWR += " | ";
-				 c++;
+			 tPBWR[c] += in.nextLine();
+			 if(c == 0 && twolinecheck == true && (dispWR == true && dispPB == true))
+			 {  
+				 tPBWR[c] += " | ";
 			 }
-	   }
-   }
+          c++;
+	   }   
+      if(dispWR == true && dispPB == true)
+      {
+         thePBWR += tPBWR[0];
+         thePBWR += tPBWR[1];
+      }
+      if(dispWR == true && dispPB == false)
+      {
+         thePBWR += tPBWR[0];
+      }
+      if(dispWR == false && dispPB == true)
+      {
+         thePBWR += tPBWR[1];
+         if(twolinecheck == false)
+         {
+            thePBWR += tPBWR[0];
+         }
+      }
+   } 
+   public static void loadConfig() throws FileNotFoundException
+   {
+       Scanner in = new Scanner(Config);
+       String curLine = null;
+       while(in.hasNextLine())
+       {
+         curLine = in.nextLine();
+         if(curLine.contains("Recent clear rates:") && curLine.contains("TRUE")) {header = true;}
+         if(curLine.contains("X clears / past hr") && curLine.contains("TRUE")) {pasthr = true;}
+         if(curLine.contains("X clears / past 10 min") && curLine.contains("TRUE")) {pastten = true;}
+         if(curLine.contains("Time elapsed: X:XX:XX") && curLine.contains("TRUE")) {timerunstart = true;}
+         if(curLine.contains("(+TimeSinceLastInputInSeconds)") && curLine.contains("TRUE")) {lastinput = true;}
+         if(curLine.contains("Clears since run start: X") && curLine.contains("TRUE")) {clearsrunstart = true;}
+         if(curLine.contains("Current Pace: X:XX:XX") && curLine.contains("TRUE")) {curpace = true;}
+         if(curLine.contains("Lives: X") && curLine.contains("TRUE")) {curlives = true;}
+         if(curLine.contains("(Per min: X)") && curLine.contains("TRUE")) {avglives = true;}
+         if(curLine.contains("LineWithPB/WR") && curLine.contains("TRUE")) {linewithPBWR = true;}
+         if(curLine.contains("WR: X:XX:XX") && curLine.contains("TRUE")) {dispWR = true;}
+         if(curLine.contains("PB: X:XX:XX") && curLine.contains("TRUE")) {dispPB = true;}
+         if(curLine.contains("COOLDOWN")) {cdval = Integer.parseInt(curLine.substring(curLine.lastIndexOf("=") + 1))  ;}
+       }
+   } 
    public void nativeKeyPressed(NativeKeyEvent e) 
    { 
       long time = (System.currentTimeMillis() - starttime)/1000;
@@ -69,12 +132,11 @@ public class MM2Lives implements NativeKeyListener
       String kP = NativeKeyEvent.getKeyText(e.getKeyCode());
       if(kP.equals("Back Slash"))
       {
-         //System.out.println("!");
          System.exit(1);
       }   
       long cd = System.currentTimeMillis() - cooldown; //Cooldown of 10 seconds prevents accidental secondary presses
       int seclast = ((int) cd ) / 1000; 
-      if(cd >= 10000) // <- adjust this number of milliseconds to adjust cooldown timer
+      if(cd >= cdval*1000) // <- adjust this number of milliseconds to adjust cooldown timer
       { 
          if(kP.equals("1") || kP.equals("2") || kP.equals("3") || kP.equals("0") || kP.equals("9")) 
          { 
@@ -146,25 +208,20 @@ public class MM2Lives implements NativeKeyListener
              String line = "";
              
                //Feel free to comment/uncomment out any lines you don't want to see, you can even replace the run timer with your own stopwatch
-                //line += "Recent clear rates: "; line += "\n";
-                //line += Integer.toString(hourcount); line += " clears / past hr "; line += "\n"; 
-                //line += Integer.toString(tenmincount); line += " clears / past 10 min "; line += "\n"; 
-                //line += "Clears since run start: "; line += totalclears; line += "\n";
-                //line += "Current Lives: "; line += (livesgained + 5); line += "\n";
-                
-               
-                
-                
-                line += "Time elapsed: "; line += "  "; line += ":"; line += "  "; line += ":"; line += "  "; line += " (+"; line += Integer.toString(seclast); line += ")"; line += "\n"; 
-                line += "Current Pace: "; line += Long.toString(pacehours); line += ":"; line += pacesdm; line += Long.toString(paceminutes); line += ":"; line += pacesds; line += Long.toString(pacesecs); line += "\n";
-                line += "Lives: "; line += (livesgained + 5); line += " (Per min: "; line += lpm; line += ")\n"; 
-                line += thePBWR;  line += "\n";
-                //line += "WR: 45:56 | PB: 49:38 "; line += "\n";
+                      
+                if(header == true) { line += "Recent clear rates: "; line += "\n"; }
+                if(pasthr == true) { line += Integer.toString(hourcount); line += " clears / past hr "; line += "\n"; }
+                if(pastten == true) { line += Integer.toString(tenmincount); line += " clears / past 10 min "; line += "\n"; }
+                line += "Time elapsed: "; if(timerunstart) {line += Long.toString(hours); line += ":"; line += sdm; line += Long.toString(minutes); line += ":"; line += sds; line += Long.toString(secs);} else { line += "  "; line += ":"; line += "  "; line += ":"; line += "  "; } if(lastinput == true) { line += " (+"; line += Integer.toString(seclast); line += ")"; } line += "\n"; 
+                if(clearsrunstart == true) { line += "Clears since run start: "; line += totalclears; line += "\n"; }
+                if(curpace == true) { line += "Current Pace: "; line += Long.toString(pacehours); line += ":"; line += pacesdm; line += Long.toString(paceminutes); line += ":"; line += pacesds; line += Long.toString(pacesecs); line += "\n"; }
+                if(curlives == true) {line += "Lives: "; line += (livesgained + 5); } if(avglives == true) { line += " (Per min: "; line += lpm; line += ")"; } if(curlives == true || avglives == true) { line += "\n"; } 
+                if(linewithPBWR == true) { line += thePBWR;  line += "\n" ; }
                 System.out.println(line); 
                 
                 
              WriteFile(line); 
-          } 
+          }
        } 
    } 
    public void nativeKeyReleased(NativeKeyEvent e){} 
@@ -186,21 +243,3 @@ public class MM2Lives implements NativeKeyListener
       catch (IOException e) { e.printStackTrace(); } 
    } 
 }
-
-
-
-
-
-/*
-             //Feel free to comment/uncomment out any lines you don't want to see, you can even replace the run timer with your own stopwatch
-                line += "Recent clear rates: "; line += "\n";
-                line += Integer.toString(hourcount); line += " clears / past hr "; line += "\n"; 
-                line += Integer.toString(tenmincount); line += " clears / past 10 min "; line += "\n"; 
-                line += "Time elapsed: "; line += Long.toString(hours);  line += " ";  line += ":"; line += sdm; line += Long.toString(minutes);  line += " ";  line += ":"; line += sds; line += Long.toString(secs); line += " "; line += " (+"; line += Integer.toString(seclast); line += ")"; line += "\n"; 
-                line += "Clears since run start: "; line += totalclears; line += "\n";
-                line += "Current Lives: "; line += (livesgained + 5); line += "\n";
-                line += "Current Pace: "; line += Long.toString(pacehours);line += " "; line += ":"; line += pacesdm; line += Long.toString(paceminutes);line += " "; line += ":"; line += pacesds; line += Long.toString(pacesecs); line += " "; line += "\n";
-                line += "Lives per minute: "; line += lpm; line += "\n"; 
-                line += "WR: 45:56 | PB: 50:54 "; line += "\n";
-                System.out.println(line); 
-*/
