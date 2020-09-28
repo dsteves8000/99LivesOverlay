@@ -20,6 +20,17 @@ public class MM2Lives implements NativeKeyListener
          GlobalScreen.registerNativeHook(); 
       } 
       catch(Exception e) { e.printStackTrace(); } 
+      String line = "";
+      if(header == true) { line += "Recent clear rates: "; line += "\n"; }
+      if(pasthr == true) { line += Integer.toString(hourcount); line += " clears / past hr "; line += "\n"; }
+      if(pastten == true) { line += Integer.toString(tenmincount); line += " clears / past 10 min "; line += "\n"; }
+      line += "Time elapsed: "; if(timerunstart) {line += "0:00:00";} else { line += "  "; line += ":"; line += "  "; line += ":"; line += "  "; } if(lastinput == true) { line += " (+0)"; } line += "\n"; 
+      if(clearsrunstart == true) { line += "Clears since run start: 0"; line += "\n"; }
+      if(curpace == true) { line += "Current Pace: "; line += "0:00:00"; line += "\n"; }
+      if(curlives == true) {line += "Lives: "; line += (livesgained + startinglives); } if(avglives == true) { line += " (Per min: 0.0)"; } if(curlives == true || avglives == true) { line += "\n"; } 
+      if(linewithPBWR == true) { line += thePBWR;  line += "\n" ; }
+      System.out.println(line); 
+      WriteFile(line); 
       GlobalScreen.getInstance().addNativeKeyListener(new MM2Lives()); 
    } 
    static File oldoutput, output, PBWR, Config; 
@@ -34,6 +45,7 @@ public class MM2Lives implements NativeKeyListener
    static int tenmincount = 0; 
    static String thePBWR = "";
    static long cdval = 10;
+   static int startinglives = 5;
    public static boolean handlePBWR() throws IOException
    {
 	   PBWR = new File ("PBWR.txt");
@@ -48,7 +60,7 @@ public class MM2Lives implements NativeKeyListener
    }
    public static void loadPBWR() throws FileNotFoundException
    {
-	  Scanner in = new Scanner(PBWR);
+	   Scanner in = new Scanner(PBWR);
       Scanner check = new Scanner(PBWR);
       String [] tPBWR = new String [2];
       tPBWR[0] = "";
@@ -110,7 +122,8 @@ public class MM2Lives implements NativeKeyListener
          if(curLine.contains("LineWithPB/WR") && curLine.contains("TRUE")) {linewithPBWR = true;}
          if(curLine.contains("WR: X:XX:XX") && curLine.contains("TRUE")) {dispWR = true;}
          if(curLine.contains("PB: X:XX:XX") && curLine.contains("TRUE")) {dispPB = true;}
-         if(curLine.contains("COOLDOWN")) {cdval = Integer.parseInt(curLine.substring(curLine.lastIndexOf("=") + 1))  ;}
+         if(curLine.contains("COOLDOWN")) {cdval = Integer.parseInt(curLine.substring(curLine.lastIndexOf("=") + 1));}
+         if(curLine.contains("STARTING LIVES")) {startinglives = Integer.parseInt(curLine.substring(curLine.lastIndexOf("=") + 1));}
        }
    } 
    public void nativeKeyPressed(NativeKeyEvent e) 
@@ -140,25 +153,22 @@ public class MM2Lives implements NativeKeyListener
       { 
          if(kP.equals("1") || kP.equals("2") || kP.equals("3") || kP.equals("0") || kP.equals("9")) 
          { 
-            if(kP.equals("1") || kP.equals("2") || kP.equals("3") || kP.equals("0") || kP.equals("9"))
-            {
-               cooldown = System.currentTimeMillis(); 
-               int sec = (int) (System.currentTimeMillis()/1000); 
-               times.add(sec); 
-               Integer [] timearray = times.toArray(new Integer[times.size()]); 
-               hourcount = 0; 
-               tenmincount = 0; 
-               for(int i = 0; i < timearray.length; i++) 
+            cooldown = System.currentTimeMillis(); 
+            int sec = (int) (System.currentTimeMillis()/1000); 
+            times.add(sec); 
+            Integer [] timearray = times.toArray(new Integer[times.size()]); 
+            hourcount = 0; 
+            tenmincount = 0; 
+            for(int i = 0; i < timearray.length; i++) 
+            { 
+               if((sec - timearray[i]) <= 3600) 
                { 
-                  if((sec - timearray[i]) <= 3600) 
+                  hourcount++; 
+                  if((sec - timearray[i]) <= 600)
                   { 
-                     hourcount++; 
-                     if((sec - timearray[i]) <= 600)
-                     { 
-                        tenmincount++; 
-                     } 
+                     tenmincount++; 
                   } 
-                }
+               } 
              }
              if(kP.equals("1"))
              {
@@ -180,14 +190,14 @@ public class MM2Lives implements NativeKeyListener
              {
                totalclears++;
              }
-             if(livesgained > 94)
+             if(livesgained > (99-startinglives))
              {
-               livesgained = 94;
+               livesgained = (99-startinglives);
              }
              long pacetime = 0;
              if(livesgained > 0)
              {
-               pacetime = (time*94)/livesgained;
+               pacetime = (time*(99-startinglives))/livesgained;
              }
              long pacesecs = pacetime%60; 
              String pacesds = ""; 
@@ -215,7 +225,7 @@ public class MM2Lives implements NativeKeyListener
                 line += "Time elapsed: "; if(timerunstart) {line += Long.toString(hours); line += ":"; line += sdm; line += Long.toString(minutes); line += ":"; line += sds; line += Long.toString(secs);} else { line += "  "; line += ":"; line += "  "; line += ":"; line += "  "; } if(lastinput == true) { line += " (+"; line += Integer.toString(seclast); line += ")"; } line += "\n"; 
                 if(clearsrunstart == true) { line += "Clears since run start: "; line += totalclears; line += "\n"; }
                 if(curpace == true) { line += "Current Pace: "; line += Long.toString(pacehours); line += ":"; line += pacesdm; line += Long.toString(paceminutes); line += ":"; line += pacesds; line += Long.toString(pacesecs); line += "\n"; }
-                if(curlives == true) {line += "Lives: "; line += (livesgained + 5); } if(avglives == true) { line += " (Per min: "; line += lpm; line += ")"; } if(curlives == true || avglives == true) { line += "\n"; } 
+                if(curlives == true) {line += "Lives: "; line += (livesgained + startinglives); } if(avglives == true) { line += " (Per min: "; line += lpm; line += ")"; } if(curlives == true || avglives == true) { line += "\n"; } 
                 if(linewithPBWR == true) { line += thePBWR;  line += "\n" ; }
                 System.out.println(line); 
                 
