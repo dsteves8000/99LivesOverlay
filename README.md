@@ -25,4 +25,4 @@ Anytime you wish to update the WR or PB just go into PBWR.txt and edit the text 
 
 Update to the previous paragraph - I have now made it so that you can turn on and off which lines you want visible in Config.txt, and even adjust the cooldown! (Please DO NOT change this number to anything below 2 seconds (COOLDOWN=2) or there might be some unruly results. Default is COOLDOWN=10 (10 seconds). You can also now adjust the starting number of lives (leave this at 5 if you are starting a brand new run, change this to 4 if you are starting from the middle of an endless run and have a non-zero amount of coins for justifiable fairness)
 
-You can now see the analytics of your run at the end of each run! If you terminate the program using the "\" button, the program will produce a graph in the same folder!
+You can now see the analytics of your run at the end of each run! If you terminate the program using the " \ " button, the program will produce a graph in the same folder!
