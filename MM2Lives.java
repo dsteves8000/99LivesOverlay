@@ -5,10 +5,16 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent; 
 import org.jnativehook.keyboard.NativeKeyListener; 
 import java.lang.Math; 
+import org.jfree.chart.ChartFactory; 
+import org.jfree.chart.JFreeChart; 
+import org.jfree.data.xy.XYSeries; 
+import org.jfree.chart.plot.PlotOrientation; 
+import org.jfree.data.xy.XYSeriesCollection; 
+import org.jfree.chart.ChartUtils;
 public class MM2Lives implements NativeKeyListener 
 { 
    public static void main(String [] args) throws FileNotFoundException, IOException 
-   { 
+   {
 	  //Reads the file with the WR and PB
 	  handleConfig();
 	  handlePBWR();
@@ -31,6 +37,9 @@ public class MM2Lives implements NativeKeyListener
       if(linewithPBWR == true) { line += thePBWR;  line += "\n" ; }
       System.out.println(line); 
       WriteFile(line); 
+      times.add(0);
+      paces.add(0);
+      lives.add(livesgained + startinglives);
       GlobalScreen.getInstance().addNativeKeyListener(new MM2Lives()); 
    } 
    static File oldoutput, output, PBWR, Config; 
@@ -40,7 +49,9 @@ public class MM2Lives implements NativeKeyListener
    static int livesgained = 0;
    static long starttime = System.currentTimeMillis(); 
    static long cooldown = System.currentTimeMillis(); 
-   static ArrayList<Integer> times = new ArrayList<Integer>(); 
+   static ArrayList<Integer> times = new ArrayList<Integer>();
+   static ArrayList<Integer> paces = new ArrayList<Integer>();
+   static ArrayList<Integer> lives = new ArrayList<Integer>();
    static int hourcount = 0; 
    static int tenmincount = 0; 
    static String thePBWR = "";
@@ -145,7 +156,34 @@ public class MM2Lives implements NativeKeyListener
       String kP = NativeKeyEvent.getKeyText(e.getKeyCode());
       if(kP.equals("Back Slash"))
       {
-         System.exit(1);
+    	  int sec = (int) (starttime/1000);          
+    	  Integer [] timearray = times.toArray(new Integer[times.size()]);           
+    	  Integer [] pacearray = paces.toArray(new Integer[times.size()]);
+    	  Integer [] lifearray = lives.toArray(new Integer[times.size()]);
+    	  double [] timedoubles = new double [timearray.length];          
+    	  double [] livesarray = new double [timearray.length];          
+    	  double [] pacetimes = new double [pacearray.length];                 
+    	  for(int i = 0; i < timearray.length; i++)          
+    	  {         
+    		  if (i == 0)
+    		  {
+    			  timedoubles[0] = 0.0;
+    		  }
+    		  if(i > 0)
+    		  {
+    			  timedoubles[i] = (double) (timearray[i] - sec);   
+    			  timedoubles[i] = timedoubles[i]/60;
+    		  }
+    		  pacetimes[i] = (double) (pacearray[i]/60);
+    		  livesarray[i] = (double) (lifearray[i]); 
+    		  System.out.println(timedoubles[i] + " " + livesarray[i] + " " + pacetimes[i]);
+    	  }                      
+    	  try          
+    	  {             
+    		  plot(timedoubles, livesarray, pacetimes);          
+    	  }          
+    	  catch(Exception g) {}            
+    	  System.exit(1);
       }   
       long cd = System.currentTimeMillis() - cooldown; //Cooldown of 10 seconds prevents accidental secondary presses
       int seclast = ((int) cd ) / 1000; 
@@ -228,7 +266,8 @@ public class MM2Lives implements NativeKeyListener
                 if(curlives == true) {line += "Lives: "; line += (livesgained + startinglives); } if(avglives == true) { line += " (Per min: "; line += lpm; line += ")"; } if(curlives == true || avglives == true) { line += "\n"; } 
                 if(linewithPBWR == true) { line += thePBWR;  line += "\n" ; }
                 System.out.println(line); 
-                
+                paces.add((int) pacetime);
+                lives.add(livesgained + startinglives);
                 
              WriteFile(line); 
           }
@@ -252,4 +291,32 @@ public class MM2Lives implements NativeKeyListener
       } 
       catch (IOException e) { e.printStackTrace(); } 
    } 
+   public static void plot(double [] x, double [] y, double [] p) throws Exception    
+   {       
+	   final XYSeries thelives = new XYSeries("Lives");       
+	   final XYSeries thepaces = new XYSeries("Pace");       
+	   for(int i = 0; i < y.length; i++)       
+	   {          
+		   thelives.add(x[i], y[i]);          
+		   if(i > 0)          
+		   {             
+			   thepaces.add(x[i], p[i]);          
+		   }       
+	   }       
+	   final XYSeriesCollection dataset = new XYSeriesCollection();       
+	   dataset.addSeries(thelives);       
+	   dataset.addSeries(thepaces);       
+	   JFreeChart xylineChart = ChartFactory.createXYLineChart("Lives, Pace Over Time", "Time (minutes)", "Lives, Pace (minutes)", dataset, PlotOrientation.VERTICAL, true, true, false);      
+	   int width = 640;       
+	   int height = 480;           
+	   int count = 1;       
+	   String save = "RunAnalytics.jpeg";       
+	   File XYChart = new File(save);       
+	   while(XYChart.exists())        
+	   {          
+		   save = "RunAnalytics" + (count++) +".jpeg";          
+		   XYChart = new File(save);        
+	   }       
+	   ChartUtils.saveChartAsJPEG(XYChart, xylineChart, width, height);    
+   }
 }
